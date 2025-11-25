@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="simon-cpp/simon-cpp.vcxproj" Id="e0f4a751-0427-427f-8220-4110ec71c075" />
+</Solution>
