@@ -6,11 +6,23 @@
 
 using namespace std;
 
+struct Flash {
+	int buttonId;
+	sf::Clock timer;
+	float delay = 0.0f;
+	bool started = false;
+};
+
+vector<Flash> clickFlashes;
+
 Game::Game()
 	: window(WINDOW_WIDTH, WINDOW_HEIGHT, "simon-cpp"),
-	currentStep(0)
+	currentStep(0),
+	state(GameState::ShowingSequence),
+	sequenceIndex(0)
+
 {
-	cout << "Initializing..." << endl;
+	cout << "Initializing new game..." << endl;
 
 	int gridWidth = BUTTON_SIZE * 2 + MARGIN;
 	int gridHeight = BUTTON_SIZE * 2 + MARGIN;
@@ -19,8 +31,12 @@ Game::Game()
 	startY = (WINDOW_HEIGHT - gridHeight) / 2;
 
 	setupButtons();
-
 	srand(static_cast<unsigned>(time(nullptr)));
+
+	addRandomButton();
+
+	waitingToShowSequence = true;
+	sequencePauseTimer.restart();
 }
 
 void Game::setupButtons() {
@@ -42,19 +58,29 @@ void Game::addRandomButton() {
 void Game::handlePlayerClick(const sf::Vector2f& mousePos) {
 	for (size_t i = 0; i < buttons.size(); i++) {
 		if (buttons[i].contains(mousePos)) {
-			bool correct = checkInput(i);
+			clickFlashes.push_back({ (int)i, sf::Clock(), 0.0f, false });
 
-			if (!correct) {
+			if (sequence[currentStep] == (int)i) {
+				currentStep++;
+
+				if (currentStep >= sequence.size()) {
+					cout << "Correct entire seq.. Adding new  button" << endl;
+					addRandomButton();
+					currentStep = 0;
+
+					waitingToShowSequence = true;
+					sequencePauseTimer.restart();
+				}
+			}
+			else {
+				cout << "Wrong seq... Restarting game" << endl;
+
+				state = GameState::ShowingSequence; // Bloqueia novos inputs
+				waitingToShowSequence = true;
+				sequencePauseTimer.restart();
+
 				reset();
-				addRandomButton();
 			}
-			else if (currentStep == 0) {
-				addRandomButton();
-			}
-
-			state = GameState::ShowingSequence;
-			sequenceIndex = 0;
-			timer.restart();
 
 			break;
 		}
@@ -122,20 +148,59 @@ void Game::processEvents() {
 }
 
 void Game::update() {
+	for (auto it = clickFlashes.begin(); it != clickFlashes.end();) {
+		int id = it->buttonId;
+		if (it->timer.getElapsedTime().asSeconds() < flashDuration) {
+			buttons[id].flash();
+			++it;
+		}
+		else {
+			buttons[id].resetColor();
+			it = clickFlashes.erase(it);
+		}
+	}
+
+	if (waitingToShowSequence) {
+		if (sequencePauseTimer.getElapsedTime().asSeconds() >= pauseDuration) {
+			state = GameState::ShowingSequence;
+			sequenceIndex = 0;
+			flashOn = false;
+			waitingToShowSequence = false;
+			timer.restart();
+		}
+		return;
+	}
+
 	if (state == GameState::ShowingSequence) {
 		if (sequenceIndex < sequence.size()) {
 			int btnId = sequence[sequenceIndex];
-			buttons[btnId].flash();
+			float elapsed = timer.getElapsedTime().asSeconds();
 
-			if (timer.getElapsedTime().asSeconds() > flashDuration) {
+			if (!flashOn) {
+				buttons[btnId].flash();
+				flashOn = true;
+				timer.restart();
+			}
+			else if (elapsed >= flashDuration && elapsed < flashDuration + pauseDuration) {
+				if (elapsed >= flashDuration && elapsed < flashDuration + 0.01f) {
+					buttons[btnId].resetColor();
+				}
+			}
+			else if (elapsed >= flashDuration + pauseDuration) {
+				flashOn = false;
 				sequenceIndex++;
 				timer.restart();
 			}
 		}
-	}
-	else {
-		state = GameState::WaitingInput;
-		sequenceIndex = 0;
+		else {
+			if (timer.getElapsedTime().asSeconds() >= pauseDurationPlayer) {
+				state = GameState::WaitingInput;
+				currentStep = 0;
+				sequenceIndex = 0;
+				flashOn = false;
+				cout << "Waiting player input..." << endl;
+			}
+		}
 	}
 }
 

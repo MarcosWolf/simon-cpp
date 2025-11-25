@@ -21,15 +21,22 @@ private:
 	std::vector<Button> buttons;
 
 	vector<int> sequence;
-	int currentStep;
+	int currentStep = 0;
 
 	int startX;
 	int startY;
 
 	GameState state;
-	size_t sequenceIndex;
+	size_t sequenceIndex = 0;
+
 	sf::Clock timer;
-	float flashDuration = 0.5f;
+	float flashDuration = 0.1f;
+	float pauseDuration = 1.0f;
+	bool flashOn = false;
+
+	float pauseDurationPlayer = 0.1f;
+	sf::Clock sequencePauseTimer;
+	bool waitingToShowSequence = false;
 public:
 	Game();
 	void run();
