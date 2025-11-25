@@ -13,7 +13,7 @@ SimonCPP é uma implementação didática do jogo Simon. O objetivo do jogo é m
 ## Tecnologias Utilizadas
 
 - C++
-- SFML 2.6.x
+- SFML 2.6.1
 
 ## Estrutura do Projeto
 ```text
