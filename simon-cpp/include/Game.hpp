@@ -33,7 +33,7 @@ private:
 
 	sf::Clock timer;
 	float flashDuration = 0.1f;
-	float pauseDuration = 1.0f;
+	float pauseDuration = 0.5f;
 	bool flashOn = false;
 
 	float gameOverPause = 2.0f;
