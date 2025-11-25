@@ -1,22 +1,11 @@
-#include <SFML/Graphics.hpp>
+#include "../include/Game.hpp"
+
+#include <iostream>
 
 int main() {
-	sf::RenderWindow window(sf::VideoMode(800, 600), "simon-cpp");
+	std::cout << "Inicializando simon-cpp";
 
-	while (window.isOpen()) {
-		sf::Event event;
-
-		while (window.pollEvent(event))
-		{
-			if (event.type == sf::Event::Closed) {
-				window.close();
-			}
-		}
-
-		window.clear(sf::Color::Black);
-
-		window.display();
-	}
+	Game game;
 
 	return 0;
 }
