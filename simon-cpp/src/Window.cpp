@@ -1,7 +1,9 @@
 #include "../include/Window.hpp";
 
 Window::Window(int width, int height, const std::string& title)
-	: window(sf::VideoMode(width, height), title) { }
+	: window(sf::VideoMode(width, height), title, sf::Style::Titlebar | sf::Style::Close)
+{
+}
 
 bool Window::isOpen() {
 	return window.isOpen();
