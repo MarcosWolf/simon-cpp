@@ -1,4 +1,4 @@
-#include "../include/Window.hpp";
+#include "../include/Window.hpp"
 
 Window::Window(int width, int height, const std::string& title)
 	: window(sf::VideoMode(width, height), title, sf::Style::Titlebar | sf::Style::Close)
