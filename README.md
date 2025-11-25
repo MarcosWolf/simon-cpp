@@ -21,7 +21,6 @@ Clone o repositório:
 
 ```bash
 git clone https://github.com/MarcosWolf/simon-cpp.git
-cd simon-cpp
 ```
 
 ### Windows
@@ -29,7 +28,7 @@ cd simon-cpp
 1. Acesse a pasta:
 
 ```bash
-simon-cpp/dist/
+cd simon-cpp/dist/
 ```
 
 2. Execute: 
@@ -52,13 +51,19 @@ sfml-system-2.dll, sfml-window-2.dll, sfml-graphics-2.dll, sfml-audio-2.dll e op
 sudo apt install libsfml-dev
 ```
 
-2. Compile: 
+2. Acesse a pasta:
+
+```bash
+cd simon-cpp/simon-cpp/
+```
+
+3. Compile: 
 
 ```bash
 g++ src/*.cpp -I include -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -o simon
 ```
 
-3. Execute:
+4. Execute:
 ```bash
 ./simon
 ```
