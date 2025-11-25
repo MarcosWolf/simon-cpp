@@ -15,8 +15,6 @@ Release/
 *.iobj
 *.tlog
 *.ilk
-*.exe
-*.dll
 
 *.log
 
