@@ -15,6 +15,8 @@ struct Flash {
 
 vector<Flash> clickFlashes;
 
+AudioManager audio;
+
 Game::Game()
 	: window(WINDOW_WIDTH, WINDOW_HEIGHT, "simon-cpp"),
 	currentStep(0),
@@ -30,6 +32,14 @@ Game::Game()
 	startX = (WINDOW_WIDTH - gridWidth) / 2;
 	startY = (WINDOW_HEIGHT - gridHeight) / 2;
 
+	audio.loadSound("green", "resources/sfx/green.ogg");
+	audio.loadSound("red", "resources/sfx/red.ogg");
+	audio.loadSound("yellow", "resources/sfx/yellow.ogg");
+	audio.loadSound("blue", "resources/sfx/blue.ogg");
+	audio.loadSound("gameover", "resources/sfx/gameover.ogg");
+
+	cout << "Loading audios..." << endl;
+
 	setupButtons();
 	srand(static_cast<unsigned>(time(nullptr)));
 
@@ -37,6 +47,17 @@ Game::Game()
 
 	waitingToShowSequence = true;
 	sequencePauseTimer.restart();
+}
+
+void Game::playButtonSound(int id) {
+	switch (id) {
+	case 0: audio.play("green"); break;
+	case 1: audio.play("red"); break;
+	case 2: audio.play("yellow"); break;
+	case 3: audio.play("blue"); break;
+	}
+
+	cout << "played button sfx[" << id << "]" << endl;
 }
 
 void Game::setupButtons() {
@@ -53,6 +74,15 @@ void Game::addRandomButton() {
 	sequence.push_back(buttonId);
 
 	cout << "New seq generated.... " << buttonId << endl;
+
+	cout << "[";
+	for (size_t i = 0; i < sequence.size(); i++) {
+		cout << sequence[i];
+		if (i < sequence.size() - 1) {
+			cout << ", ";
+		}
+	}
+	cout << "]" << endl;
 }
 
 void Game::handlePlayerClick(const sf::Vector2f& mousePos) {
@@ -60,11 +90,13 @@ void Game::handlePlayerClick(const sf::Vector2f& mousePos) {
 		if (buttons[i].contains(mousePos)) {
 			clickFlashes.push_back({ (int)i, sf::Clock(), 0.0f, false });
 
+			playButtonSound(i);
+
 			if (sequence[currentStep] == (int)i) {
 				currentStep++;
 
 				if (currentStep >= sequence.size()) {
-					cout << "Correct entire seq.. Adding new  button" << endl;
+					cout << "Correct entire seq... Good job" << endl;
 					addRandomButton();
 					currentStep = 0;
 
@@ -73,13 +105,13 @@ void Game::handlePlayerClick(const sf::Vector2f& mousePos) {
 				}
 			}
 			else {
+				cout << "GAME OVER" << endl;
 				cout << "Wrong seq... Restarting game" << endl;
 
-				state = GameState::ShowingSequence; // Bloqueia novos inputs
-				waitingToShowSequence = true;
-				sequencePauseTimer.restart();
+				audio.play("gameover");
 
-				reset();
+				state = GameState::GameOver;
+				sequencePauseTimer.restart();
 			}
 
 			break;
@@ -91,8 +123,8 @@ void Game::reset() {
 	sequence.clear();
 	currentStep = 0;
 	addRandomButton();
-	state = GameState::ShowingSequence;
 	sequenceIndex = 0;
+	flashOn = false;
 	timer.restart();
 	cout << "Game restarting..." << endl;
 }
@@ -102,13 +134,14 @@ bool Game::checkInput(int buttonId) {
 		currentStep++;
 		if (currentStep >= sequence.size()) {
 			currentStep = 0;
-			cout << "Correct entire seq... Getting " << endl;
+			cout << "Correct entire seq... " << endl;
 			return true;
 		}
 		cout << "Correct seq... " << endl;
 		return true;
 	}
 	cout << "Wrong seq... Game over" << endl;
+	
 	return false;
 }
 
@@ -178,6 +211,7 @@ void Game::update() {
 
 			if (!flashOn) {
 				buttons[btnId].flash();
+				playButtonSound(btnId);
 				flashOn = true;
 				timer.restart();
 			}
@@ -201,6 +235,16 @@ void Game::update() {
 				cout << "Waiting player input..." << endl;
 			}
 		}
+	}
+
+	if (state == GameState::GameOver) {
+		if (sequencePauseTimer.getElapsedTime().asSeconds() >= gameOverPause) {
+			reset();
+			waitingToShowSequence = true;
+			state = GameState::ShowingSequence;
+			sequencePauseTimer.restart();
+		}
+		return;
 	}
 }
 
