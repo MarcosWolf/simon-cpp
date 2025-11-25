@@ -1,6 +1,7 @@
 #pragma once
 #include "Window.hpp"
 #include "Button.hpp"
+#include "AudioManager.hpp"
 #include <vector>
 
 using namespace std;
@@ -12,7 +13,8 @@ constexpr int MARGIN = 50;
 
 enum class GameState {
 	ShowingSequence,
-	WaitingInput
+	WaitingInput,
+	GameOver
 };
 
 class Game {
@@ -34,7 +36,9 @@ private:
 	float pauseDuration = 1.0f;
 	bool flashOn = false;
 
-	float pauseDurationPlayer = 0.1f;
+	float gameOverPause = 2.0f;
+
+	float pauseDurationPlayer = 0.0f;
 	sf::Clock sequencePauseTimer;
 	bool waitingToShowSequence = false;
 public:
@@ -47,6 +51,7 @@ public:
 
 private:
 	void setupButtons();
+	void playButtonSound(int id);
 	void handlePlayerClick(const sf::Vector2f& mousePos);
 
 	void processEvents();
