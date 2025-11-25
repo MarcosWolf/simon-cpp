@@ -39,9 +39,35 @@ void Game::addRandomButton() {
 	cout << "New seq generated.... " << buttonId << endl;
 }
 
+void Game::handlePlayerClick(const sf::Vector2f& mousePos) {
+	for (size_t i = 0; i < buttons.size(); i++) {
+		if (buttons[i].contains(mousePos)) {
+			bool correct = checkInput(i);
+
+			if (!correct) {
+				reset();
+				addRandomButton();
+			}
+			else if (currentStep == 0) {
+				addRandomButton();
+			}
+
+			state = GameState::ShowingSequence;
+			sequenceIndex = 0;
+			timer.restart();
+
+			break;
+		}
+	}
+}
+
 void Game::reset() {
 	sequence.clear();
 	currentStep = 0;
+	addRandomButton();
+	state = GameState::ShowingSequence;
+	sequenceIndex = 0;
+	timer.restart();
 	cout << "Game restarting..." << endl;
 }
 
@@ -50,10 +76,10 @@ bool Game::checkInput(int buttonId) {
 		currentStep++;
 		if (currentStep >= sequence.size()) {
 			currentStep = 0;
-			cout << "Right seq... Game over" << endl;
+			cout << "Correct entire seq... Getting " << endl;
 			return true;
 		}
-		cout << "Right seq ... " << endl;
+		cout << "Correct seq... " << endl;
 		return true;
 	}
 	cout << "Wrong seq... Game over" << endl;
@@ -74,11 +100,43 @@ void Game::run() {
 }
 
 void Game::processEvents() {
+	sf::Event event;
 
+	while (window.get().pollEvent(event)) {
+		switch (event.type) {
+			case sf::Event::Closed:
+				window.get().close();
+				break;
+
+			case sf::Event::MouseButtonPressed:
+				if (state == GameState::WaitingInput) {
+					sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
+					handlePlayerClick(mousePos);
+				}
+				break;
+
+			default:
+				break;
+		}
+	}
 }
 
 void Game::update() {
+	if (state == GameState::ShowingSequence) {
+		if (sequenceIndex < sequence.size()) {
+			int btnId = sequence[sequenceIndex];
+			buttons[btnId].flash();
 
+			if (timer.getElapsedTime().asSeconds() > flashDuration) {
+				sequenceIndex++;
+				timer.restart();
+			}
+		}
+	}
+	else {
+		state = GameState::WaitingInput;
+		sequenceIndex = 0;
+	}
 }
 
 void Game::render() {

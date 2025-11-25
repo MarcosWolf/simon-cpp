@@ -10,6 +10,11 @@ constexpr int WINDOW_HEIGHT = 600;
 constexpr int BUTTON_SIZE = 200;
 constexpr int MARGIN = 50;
 
+enum class GameState {
+	ShowingSequence,
+	WaitingInput
+};
+
 class Game {
 private:
 	Window window;
@@ -21,7 +26,10 @@ private:
 	int startX;
 	int startY;
 
-	void setupButtons();
+	GameState state;
+	size_t sequenceIndex;
+	sf::Clock timer;
+	float flashDuration = 0.5f;
 public:
 	Game();
 	void run();
@@ -31,6 +39,9 @@ public:
 	void addRandomButton();
 
 private:
+	void setupButtons();
+	void handlePlayerClick(const sf::Vector2f& mousePos);
+
 	void processEvents();
 	void update();
 	void render();

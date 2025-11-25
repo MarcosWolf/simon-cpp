@@ -13,4 +13,6 @@ public:
 	bool isClicked(const sf::Vector2f& mousePos);
 	void flash();
 	void resetColor();
+
+	bool contains(const sf::Vector2f& point) const;
 };

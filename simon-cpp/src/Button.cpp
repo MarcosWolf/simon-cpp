@@ -23,3 +23,7 @@ void Button::flash() {
 void Button::resetColor() {
 	shape.setFillColor(baseColor);
 }
+
+bool Button::contains(const sf::Vector2f& point) const {
+	return shape.getGlobalBounds().contains(point);
+}
