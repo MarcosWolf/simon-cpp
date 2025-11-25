@@ -1,2 +1,44 @@
 ﻿  Game.cpp
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(27,84): warning C4244: 'argumento': conversão de 'int' para 'T', possível perda de dados
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(27,84): warning C4244:         with
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(27,84): warning C4244:         [
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(27,84): warning C4244:             T=float
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(27,84): warning C4244:         ]
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(27,76): warning C4244: 'argumento': conversão de 'int' para 'T', possível perda de dados
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(27,76): warning C4244:         with
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(27,76): warning C4244:         [
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(27,76): warning C4244:             T=float
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(27,76): warning C4244:         ]
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(28,107): warning C4244: 'argumento': conversão de 'int' para 'T', possível perda de dados
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(28,107): warning C4244:         with
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(28,107): warning C4244:         [
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(28,107): warning C4244:             T=float
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(28,107): warning C4244:         ]
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(28,97): warning C4244: 'argumento': conversão de 'int' para 'T', possível perda de dados
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(28,97): warning C4244:         with
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(28,97): warning C4244:         [
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(28,97): warning C4244:             T=float
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(28,97): warning C4244:         ]
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(29,105): warning C4244: 'argumento': conversão de 'int' para 'T', possível perda de dados
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(29,105): warning C4244:         with
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(29,105): warning C4244:         [
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(29,105): warning C4244:             T=float
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(29,105): warning C4244:         ]
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(29,76): warning C4244: 'argumento': conversão de 'int' para 'T', possível perda de dados
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(29,76): warning C4244:         with
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(29,76): warning C4244:         [
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(29,76): warning C4244:             T=float
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(29,76): warning C4244:         ]
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(30,128): warning C4244: 'argumento': conversão de 'int' para 'T', possível perda de dados
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(30,128): warning C4244:         with
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(30,128): warning C4244:         [
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(30,128): warning C4244:             T=float
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(30,128): warning C4244:         ]
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(30,97): warning C4244: 'argumento': conversão de 'int' para 'T', possível perda de dados
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(30,97): warning C4244:         with
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(30,97): warning C4244:         [
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(30,97): warning C4244:             T=float
+C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\simon-cpp\src\Game.cpp(30,97): warning C4244:         ]
+  main.cpp
+  Gerando Código...
   simon-cpp.vcxproj -> C:\Users\marco\OneDrive\Documentos\Projetos\simon-cpp\simon-cpp\x64\Debug\simon-cpp.exe
