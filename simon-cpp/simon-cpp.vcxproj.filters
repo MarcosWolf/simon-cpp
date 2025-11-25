@@ -42,4 +42,21 @@
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\sfx\blue.ogg">
+      <Filter>Arquivos de Recurso</Filter>
+    </None>
+    <None Include="resources\sfx\gameover.ogg">
+      <Filter>Arquivos de Recurso</Filter>
+    </None>
+    <None Include="resources\sfx\green.ogg">
+      <Filter>Arquivos de Recurso</Filter>
+    </None>
+    <None Include="resources\sfx\red.ogg">
+      <Filter>Arquivos de Recurso</Filter>
+    </None>
+    <None Include="resources\sfx\yellow.ogg">
+      <Filter>Arquivos de Recurso</Filter>
+    </None>
+  </ItemGroup>
 </Project>
