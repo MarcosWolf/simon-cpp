@@ -36,7 +36,7 @@ private:
 	int startY;
 
 	const float PAUSE_BETWEEN_BUTTONS = 0.5f;
-	const float PAUSE_AFTER_PLAYER = 3.0f;
+	const float PAUSE_AFTER_PLAYER = 0.6f;
 	const float GAME_OVER_PAUSE = 2.0f;
 
 public:

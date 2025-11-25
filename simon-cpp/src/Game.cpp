@@ -1,7 +1,6 @@
 #include "../include/Game.hpp"
 #include <ctime>
 #include <SFML/Window/Event.hpp>
-#include <iostream>
 
 Game::Game()
 	: window(WINDOW_WIDTH, WINDOW_HEIGHT, "simon-cpp"),
@@ -51,11 +50,11 @@ void Game::handlePlayerClick(const sf::Vector2f& mousePos) {
 
 			if (sequenceManager.checkStep(i)) {
 				if (sequenceManager.isSequenceComplete()) {
-					startNewRound();
+					state = GameState::WaitingNextRound;
+					stateTimer.restart();
 				}
 			}
 			else {
-				std::cout << "Game Over" << std::endl;
 				gameOver();
 			}
 			break;
@@ -66,7 +65,8 @@ void Game::handlePlayerClick(const sf::Vector2f& mousePos) {
 void Game::startNewRound() {
 	sequenceManager.addRandom();
 	sequenceManager.resetStep();
-	state = GameState::ShowingSequence();
+	sequencePlayer.reset();
+	state = GameState::ShowingSequence;
 	sequencePlayer.reset();
 	stateTimer.restart();
 }
@@ -111,6 +111,12 @@ void Game::update() {
     flashManager.update(buttons);
 
     switch (state) {
+	case GameState::WaitingNextRound:
+		if (stateTimer.getElapsedTime().asSeconds() >= PAUSE_AFTER_PLAYER) {
+			startNewRound();
+		}
+		break;
+
         case GameState::ShowingSequence:
             if (stateTimer.getElapsedTime().asSeconds() >= PAUSE_BETWEEN_BUTTONS) {
                 bool done = sequencePlayer.update(
@@ -122,7 +128,6 @@ void Game::update() {
                 if (done) {
                     state = GameState::WaitingInput;
                     sequenceManager.resetStep();
-                    std::cout << "Sua vez!" << std::endl;
                 }
             }
             break;
@@ -134,7 +139,6 @@ void Game::update() {
             break;
 
         case GameState::WaitingInput:
-            // Aguardando clique do jogador
             break;
     }
 }

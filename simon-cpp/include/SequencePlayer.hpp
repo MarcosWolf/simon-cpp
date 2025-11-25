@@ -8,11 +8,11 @@ private:
 	bool flashOn = false;
 	sf::Clock timer;
 	float flashDuration;
-	float pauseBetweenButtons;
+	float pauseDuration;
 
 public:
-	SequencePlayer(float flash = 0.1f, float pause = 0.5f)
-		: flashDuration(flash), pauseBetweenButtons(pause) { }
+	SequencePlayer(float flash = 0.1f, float pause = 0.3f)
+		: flashDuration(flash), pauseDuration(pause) { }
 
 	void reset() {
 		index = 0;
@@ -35,12 +35,12 @@ public:
 			flashOn = true;
 			timer.restart();
 		}
-		else if (elapsed >= flashDuration && elapsed < flashDuration + pauseBetweenButtons) {
+		else if (elapsed >= flashDuration && elapsed < flashDuration + pauseDuration) {
 			if (elapsed >= flashDuration && elapsed < flashDuration + 0.01f) {
 				buttons[btnId].resetColor();
 			}
 		}
-		else if (elapsed >= flashDuration + pauseBetweenButtons) {
+		else if (elapsed >= flashDuration + pauseDuration) {
 			flashOn = false;
 			index++;
 			timer.restart();
