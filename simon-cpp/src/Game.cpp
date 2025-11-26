@@ -4,7 +4,7 @@
 
 Game::Game()
 	: window(WINDOW_WIDTH, WINDOW_HEIGHT, "simon-cpp"),
-	state(GameState::ShowingSequence)
+	state(GameState::IntroAnimation)
 {
 	int gridWidth = BUTTON_SIZE * 2 + MARGIN;
 	int gridHeight = BUTTON_SIZE * 2 + MARGIN;
@@ -22,6 +22,7 @@ Game::Game()
 	scoreDisplay.display();
 
 	stateTimer.restart();
+	introAnimation.reset();
 }
 
 void Game::setupButtons() {
@@ -100,7 +101,8 @@ void Game::reset() {
 	sequenceManager.clear();
 	sequenceManager.addRandom();
 	sequencePlayer.reset();
-	state = GameState::ShowingSequence;
+	introAnimation.reset();
+	state = GameState::IntroAnimation;
 
 	scoreDisplay.setActionMessage(ActionMessage::Wait);
 	scoreDisplay.display();
@@ -148,12 +150,27 @@ void Game::update() {
     flashManager.update(buttons);
 
     switch (state) {
-	case GameState::WaitingNextRound:
-		if (stateTimer.getElapsedTime().asSeconds() >= PAUSE_AFTER_PLAYER) {
-			startNewRound();
+		case GameState::IntroAnimation:
+		{
+			bool done = introAnimation.update(
+				buttons,
+				[this](int id) { playButtonSound(id); }
+			);
+
+			if (done) {
+				state = GameState::ShowingSequence;
+				stateTimer.restart();
+			}
+			cursorManager.setArrow();
 		}
-		cursorManager.setArrow();
 		break;
+
+		case GameState::WaitingNextRound:
+			if (stateTimer.getElapsedTime().asSeconds() >= PAUSE_AFTER_PLAYER) {
+				startNewRound();
+			}
+			cursorManager.setArrow();
+			break;
 
         case GameState::ShowingSequence:
             if (stateTimer.getElapsedTime().asSeconds() >= PAUSE_BETWEEN_BUTTONS) {

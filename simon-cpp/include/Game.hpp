@@ -7,6 +7,7 @@
 #include "FlashManager.hpp"
 #include "SequencePlayer.hpp"
 #include "ScoreDisplay.hpp"
+#include "IntroAnimation.hpp"
 #include <vector>
 
 constexpr int WINDOW_WIDTH = 800;
@@ -15,6 +16,7 @@ constexpr int BUTTON_SIZE = 200;
 constexpr int MARGIN = 50;
 
 enum class GameState {
+	IntroAnimation,
 	ShowingSequence,
 	WaitingInput,
 	WaitingNextRound,
@@ -32,6 +34,7 @@ private:
 	FlashManager flashManager;
 	SequencePlayer sequencePlayer;
 	ScoreDisplay scoreDisplay;
+	IntroAnimation introAnimation;
 
 	GameState state;
 	sf::Clock stateTimer;
