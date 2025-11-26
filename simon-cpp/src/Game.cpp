@@ -11,6 +11,8 @@ Game::Game()
 	startX = (WINDOW_WIDTH - gridWidth) / 2;
 	startY = (WINDOW_HEIGHT - gridHeight) / 2;
 
+	cursorManager.attach(window.get());
+
 	setupButtons();
 	loadAudio();
 
@@ -106,6 +108,20 @@ void Game::reset() {
 	stateTimer.restart();
 }
 
+void Game::updateCursorHover() {
+	sf::Vector2i mousePixelPos = sf::Mouse::getPosition(window.get());
+	sf::Vector2f mousePos(mousePixelPos.x, mousePixelPos.y);
+
+	for (auto& btn : buttons) {
+		if (btn.contains(mousePos)) {
+			cursorManager.setHand();
+			return;
+		}
+	}
+
+	cursorManager.setArrow();
+}
+
 void Game::run() {
 	while (window.isOpen()) {
 		processEvents();
@@ -136,6 +152,7 @@ void Game::update() {
 		if (stateTimer.getElapsedTime().asSeconds() >= PAUSE_AFTER_PLAYER) {
 			startNewRound();
 		}
+		cursorManager.setArrow();
 		break;
 
         case GameState::ShowingSequence:
@@ -154,15 +171,18 @@ void Game::update() {
                     sequenceManager.resetStep();
                 }
             }
+			cursorManager.setArrow();
             break;
 
         case GameState::GameOver:
             if (stateTimer.getElapsedTime().asSeconds() >= GAME_OVER_PAUSE) {
                 reset();
             }
+			cursorManager.setArrow();
             break;
 
         case GameState::WaitingInput:
+			updateCursorHover();
             break;
     }
 }

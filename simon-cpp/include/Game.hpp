@@ -1,6 +1,7 @@
 #pragma once
 #include "Window.hpp"
 #include "Button.hpp"
+#include "CursorManager.hpp"
 #include "AudioManager.hpp"
 #include "SequenceManager.hpp"
 #include "FlashManager.hpp"
@@ -25,6 +26,7 @@ private:
 	Window window;
 	std::vector<Button> buttons;
 
+	CursorManager cursorManager;
 	AudioManager audioManager;
 	SequenceManager sequenceManager;
 	FlashManager flashManager;
@@ -48,6 +50,8 @@ public:
 private:
 	void setupButtons();
 	void loadAudio();
+	void loadCursors();
+	void updateCursorHover();
 	void playButtonSound(int id);
 	void handlePlayerClick(const sf::Vector2f& mousePos);
 	void startNewRound();
