@@ -1,63 +1,27 @@
 #include "../include/Game.hpp"
-#include <cstdlib>
 #include <ctime>
 #include <SFML/Window/Event.hpp>
-#include <iostream>
-
-using namespace std;
-
-struct Flash {
-	int buttonId;
-	sf::Clock timer;
-	float delay = 0.0f;
-	bool started = false;
-};
-
-vector<Flash> clickFlashes;
-
-AudioManager audio;
 
 Game::Game()
 	: window(WINDOW_WIDTH, WINDOW_HEIGHT, "simon-cpp"),
-	currentStep(0),
-	state(GameState::ShowingSequence),
-	sequenceIndex(0)
-
+	state(GameState::ShowingSequence)
 {
-	cout << "Initializing new game..." << endl;
-
 	int gridWidth = BUTTON_SIZE * 2 + MARGIN;
 	int gridHeight = BUTTON_SIZE * 2 + MARGIN;
-
 	startX = (WINDOW_WIDTH - gridWidth) / 2;
 	startY = (WINDOW_HEIGHT - gridHeight) / 2;
 
-	audio.loadSound("green", "resources/sfx/green.ogg");
-	audio.loadSound("red", "resources/sfx/red.ogg");
-	audio.loadSound("yellow", "resources/sfx/yellow.ogg");
-	audio.loadSound("blue", "resources/sfx/blue.ogg");
-	audio.loadSound("gameover", "resources/sfx/gameover.ogg");
-
-	cout << "Loading audios..." << endl;
+	cursorManager.attach(window.get());
 
 	setupButtons();
-	srand(static_cast<unsigned>(time(nullptr)));
+	loadAudio();
 
-	addRandomButton();
+	std::srand(static_cast<unsigned>(time(nullptr)));
+	sequenceManager.addRandom();
 
-	waitingToShowSequence = true;
-	sequencePauseTimer.restart();
-}
+	scoreDisplay.display();
 
-void Game::playButtonSound(int id) {
-	switch (id) {
-	case 0: audio.play("green"); break;
-	case 1: audio.play("red"); break;
-	case 2: audio.play("yellow"); break;
-	case 3: audio.play("blue"); break;
-	}
-
-	cout << "played button sfx[" << id << "]" << endl;
+	stateTimer.restart();
 }
 
 void Game::setupButtons() {
@@ -65,90 +29,98 @@ void Game::setupButtons() {
 	buttons.emplace_back(sf::Vector2f(BUTTON_SIZE, BUTTON_SIZE), sf::Vector2f(startX + BUTTON_SIZE + MARGIN, startY), sf::Color::Red);
 	buttons.emplace_back(sf::Vector2f(BUTTON_SIZE, BUTTON_SIZE), sf::Vector2f(startX, startY + BUTTON_SIZE + MARGIN), sf::Color::Yellow);
 	buttons.emplace_back(sf::Vector2f(BUTTON_SIZE, BUTTON_SIZE), sf::Vector2f(startX + BUTTON_SIZE + MARGIN, startY + BUTTON_SIZE + MARGIN), sf::Color::Blue);
-
-	cout << "Setting buttons..." << endl;
 }
 
-void Game::addRandomButton() {
-	int buttonId = std::rand() % 4;
-	sequence.push_back(buttonId);
+void Game::loadAudio() {
+	audioManager.loadSound("green", "resources/sfx/green.ogg");
+	audioManager.loadSound("red", "resources/sfx/red.ogg");
+	audioManager.loadSound("yellow", "resources/sfx/yellow.ogg");
+	audioManager.loadSound("blue", "resources/sfx/blue.ogg");
+	audioManager.loadSound("gameover", "resources/sfx/gameover.ogg");
+}
 
-	cout << "New seq generated.... " << buttonId << endl;
-
-	cout << "[";
-	for (size_t i = 0; i < sequence.size(); i++) {
-		cout << sequence[i];
-		if (i < sequence.size() - 1) {
-			cout << ", ";
-		}
+void Game::playButtonSound(int id) {
+	const char* sounds[] = { "green", "red", "yellow", "blue" };
+	if (id >= 0 && id < 4) {
+		audioManager.play(sounds[id]);
 	}
-	cout << "]" << endl;
 }
 
 void Game::handlePlayerClick(const sf::Vector2f& mousePos) {
 	for (size_t i = 0; i < buttons.size(); i++) {
 		if (buttons[i].contains(mousePos)) {
-			clickFlashes.push_back({ (int)i, sf::Clock(), 0.0f, false });
-
+			flashManager.add(i);
 			playButtonSound(i);
 
-			if (sequence[currentStep] == (int)i) {
-				currentStep++;
+			if (sequenceManager.checkStep(i)) {
+				int points = 100 + (sequenceManager.size() * 10);
+				scoreDisplay.updateScore(points);
+				scoreDisplay.display();
 
-				if (currentStep >= sequence.size()) {
-					cout << "Correct entire seq... Good job" << endl;
-					addRandomButton();
-					currentStep = 0;
-
-					waitingToShowSequence = true;
-					sequencePauseTimer.restart();
+				if (sequenceManager.isSequenceComplete()) {
+					scoreDisplay.updateCombo();
+					state = GameState::WaitingNextRound;
+					stateTimer.restart();
 				}
 			}
 			else {
-				cout << "GAME OVER" << endl;
-				cout << "Wrong seq... Restarting game" << endl;
-
-				audio.play("gameover");
-
-				state = GameState::GameOver;
-				sequencePauseTimer.restart();
+				gameOver();
 			}
-
 			break;
 		}
 	}
 }
 
-void Game::reset() {
-	sequence.clear();
-	currentStep = 0;
-	addRandomButton();
-	sequenceIndex = 0;
-	flashOn = false;
-	timer.restart();
-	cout << "Game restarting..." << endl;
-}
+void Game::startNewRound() {
+	sequenceManager.addRandom();
+	sequenceManager.resetStep();
+	sequencePlayer.reset();
+	state = GameState::ShowingSequence;
+	sequencePlayer.reset();
 
-bool Game::checkInput(int buttonId) {
-	if (sequence[currentStep] == buttonId) {
-		currentStep++;
-		if (currentStep >= sequence.size()) {
-			currentStep = 0;
-			cout << "Correct entire seq... " << endl;
-			return true;
-		}
-		cout << "Correct seq... " << endl;
-		return true;
-	}
-	cout << "Wrong seq... Game over" << endl;
+	scoreDisplay.setActionMessage(ActionMessage::Wait);
+	scoreDisplay.display();
 	
-	return false;
+
+	stateTimer.restart();
 }
 
-const vector<int>& Game::getSequence() const {
-	return sequence;
+void Game::gameOver() {
+	audioManager.play("gameover");
+
+	scoreDisplay.setActionMessage(ActionMessage::GameOver);
+	scoreDisplay.display();
+
+	state = GameState::GameOver;
+	stateTimer.restart();
 }
 
+void Game::reset() {
+	scoreDisplay.resetScore();
+	sequenceManager.clear();
+	sequenceManager.addRandom();
+	sequencePlayer.reset();
+	state = GameState::ShowingSequence;
+
+	scoreDisplay.setActionMessage(ActionMessage::Wait);
+	scoreDisplay.display();
+
+	stateTimer.restart();
+}
+
+void Game::updateCursorHover() {
+	sf::Vector2i mousePixelPos = sf::Mouse::getPosition(window.get());
+	sf::Vector2f mousePos(mousePixelPos.x, mousePixelPos.y);
+
+	for (auto& btn : buttons) {
+		if (btn.contains(mousePos)) {
+			cursorManager.setHand();
+			return;
+		}
+	}
+
+	cursorManager.setArrow();
+}
 
 void Game::run() {
 	while (window.isOpen()) {
@@ -160,92 +132,59 @@ void Game::run() {
 
 void Game::processEvents() {
 	sf::Event event;
-
 	while (window.get().pollEvent(event)) {
-		switch (event.type) {
-			case sf::Event::Closed:
-				window.get().close();
-				break;
-
-			case sf::Event::MouseButtonPressed:
-				if (state == GameState::WaitingInput) {
-					sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
-					handlePlayerClick(mousePos);
-				}
-				break;
-
-			default:
-				break;
+		if (event.type == sf::Event::Closed) {
+			window.get().close();
+		}
+		else if (event.type == sf::Event::MouseButtonPressed &&
+			state == GameState::WaitingInput) {
+			sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
+			handlePlayerClick(mousePos);
 		}
 	}
 }
 
 void Game::update() {
-	for (auto it = clickFlashes.begin(); it != clickFlashes.end();) {
-		int id = it->buttonId;
-		if (it->timer.getElapsedTime().asSeconds() < flashDuration) {
-			buttons[id].flash();
-			++it;
-		}
-		else {
-			buttons[id].resetColor();
-			it = clickFlashes.erase(it);
-		}
-	}
+    flashManager.update(buttons);
 
-	if (waitingToShowSequence) {
-		if (sequencePauseTimer.getElapsedTime().asSeconds() >= pauseDuration) {
-			state = GameState::ShowingSequence;
-			sequenceIndex = 0;
-			flashOn = false;
-			waitingToShowSequence = false;
-			timer.restart();
+    switch (state) {
+	case GameState::WaitingNextRound:
+		if (stateTimer.getElapsedTime().asSeconds() >= PAUSE_AFTER_PLAYER) {
+			startNewRound();
 		}
-		return;
-	}
+		cursorManager.setArrow();
+		break;
 
-	if (state == GameState::ShowingSequence) {
-		if (sequenceIndex < sequence.size()) {
-			int btnId = sequence[sequenceIndex];
-			float elapsed = timer.getElapsedTime().asSeconds();
+        case GameState::ShowingSequence:
+            if (stateTimer.getElapsedTime().asSeconds() >= PAUSE_BETWEEN_BUTTONS) {
+                bool done = sequencePlayer.update(
+                    sequenceManager.getSequence(), 
+                    buttons,
+                    [this](int id) { playButtonSound(id); }
+                );
+                
+                if (done) {
+					scoreDisplay.setActionMessage(ActionMessage::YourTurn);
+					scoreDisplay.display();
 
-			if (!flashOn) {
-				buttons[btnId].flash();
-				playButtonSound(btnId);
-				flashOn = true;
-				timer.restart();
-			}
-			else if (elapsed >= flashDuration && elapsed < flashDuration + pauseDuration) {
-				if (elapsed >= flashDuration && elapsed < flashDuration + 0.01f) {
-					buttons[btnId].resetColor();
-				}
-			}
-			else if (elapsed >= flashDuration + pauseDuration) {
-				flashOn = false;
-				sequenceIndex++;
-				timer.restart();
-			}
-		}
-		else {
-			if (timer.getElapsedTime().asSeconds() >= pauseDurationPlayer) {
-				state = GameState::WaitingInput;
-				currentStep = 0;
-				sequenceIndex = 0;
-				flashOn = false;
-				cout << "Waiting player input..." << endl;
-			}
-		}
-	}
+                    state = GameState::WaitingInput;
+                    sequenceManager.resetStep();
+                }
+            }
+			cursorManager.setArrow();
+            break;
 
-	if (state == GameState::GameOver) {
-		if (sequencePauseTimer.getElapsedTime().asSeconds() >= gameOverPause) {
-			reset();
-			waitingToShowSequence = true;
-			state = GameState::ShowingSequence;
-			sequencePauseTimer.restart();
-		}
-		return;
-	}
+        case GameState::GameOver:
+            if (stateTimer.getElapsedTime().asSeconds() >= GAME_OVER_PAUSE) {
+                reset();
+            }
+			cursorManager.setArrow();
+            break;
+
+        case GameState::WaitingInput:
+			updateCursorHover();
+            break;
+    }
 }
 
 void Game::render() {
