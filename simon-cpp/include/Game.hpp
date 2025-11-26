@@ -5,6 +5,7 @@
 #include "SequenceManager.hpp"
 #include "FlashManager.hpp"
 #include "SequencePlayer.hpp"
+#include "ScoreDisplay.hpp"
 #include <vector>
 
 constexpr int WINDOW_WIDTH = 800;
@@ -28,6 +29,7 @@ private:
 	SequenceManager sequenceManager;
 	FlashManager flashManager;
 	SequencePlayer sequencePlayer;
+	ScoreDisplay scoreDisplay;
 
 	GameState state;
 	sf::Clock stateTimer;
@@ -37,7 +39,7 @@ private:
 
 	const float PAUSE_BETWEEN_BUTTONS = 0.5f;
 	const float PAUSE_AFTER_PLAYER = 0.6f;
-	const float GAME_OVER_PAUSE = 2.0f;
+	const float GAME_OVER_PAUSE = 5.0f;
 
 public:
 	Game();

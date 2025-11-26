@@ -143,6 +143,7 @@
     <ClInclude Include="include\Button.hpp" />
     <ClInclude Include="include\FlashManager.hpp" />
     <ClInclude Include="include\Game.hpp" />
+    <ClInclude Include="include\ScoreDisplay.hpp" />
     <ClInclude Include="include\SequenceManager.hpp" />
     <ClInclude Include="include\SequencePlayer.hpp" />
     <ClInclude Include="include\Window.hpp" />

@@ -17,6 +17,8 @@ Game::Game()
 	std::srand(static_cast<unsigned>(time(nullptr)));
 	sequenceManager.addRandom();
 
+	scoreDisplay.display();
+
 	stateTimer.restart();
 }
 
@@ -49,7 +51,12 @@ void Game::handlePlayerClick(const sf::Vector2f& mousePos) {
 			playButtonSound(i);
 
 			if (sequenceManager.checkStep(i)) {
+				int points = 100 + (sequenceManager.size() * 10);
+				scoreDisplay.updateScore(points);
+				scoreDisplay.display();
+
 				if (sequenceManager.isSequenceComplete()) {
+					scoreDisplay.updateCombo();
 					state = GameState::WaitingNextRound;
 					stateTimer.restart();
 				}
@@ -68,20 +75,34 @@ void Game::startNewRound() {
 	sequencePlayer.reset();
 	state = GameState::ShowingSequence;
 	sequencePlayer.reset();
+
+	scoreDisplay.setActionMessage(ActionMessage::Wait);
+	scoreDisplay.display();
+	
+
 	stateTimer.restart();
 }
 
 void Game::gameOver() {
 	audioManager.play("gameover");
+
+	scoreDisplay.setActionMessage(ActionMessage::GameOver);
+	scoreDisplay.display();
+
 	state = GameState::GameOver;
 	stateTimer.restart();
 }
 
 void Game::reset() {
+	scoreDisplay.resetScore();
 	sequenceManager.clear();
 	sequenceManager.addRandom();
 	sequencePlayer.reset();
 	state = GameState::ShowingSequence;
+
+	scoreDisplay.setActionMessage(ActionMessage::Wait);
+	scoreDisplay.display();
+
 	stateTimer.restart();
 }
 
@@ -126,6 +147,9 @@ void Game::update() {
                 );
                 
                 if (done) {
+					scoreDisplay.setActionMessage(ActionMessage::YourTurn);
+					scoreDisplay.display();
+
                     state = GameState::WaitingInput;
                     sequenceManager.resetStep();
                 }
