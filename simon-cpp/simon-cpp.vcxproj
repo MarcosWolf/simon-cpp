@@ -144,6 +144,7 @@
     <ClInclude Include="include\CursorManager.hpp" />
     <ClInclude Include="include\FlashManager.hpp" />
     <ClInclude Include="include\Game.hpp" />
+    <ClInclude Include="include\IntroAnimation.hpp" />
     <ClInclude Include="include\ScoreDisplay.hpp" />
     <ClInclude Include="include\SequenceManager.hpp" />
     <ClInclude Include="include\SequencePlayer.hpp" />
