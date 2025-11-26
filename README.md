@@ -4,11 +4,12 @@ Jogo clássico Simon implementado em C++ usando SFML (Graphics + Audio). O jogad
 
 ## Sobre
 
-SimonCPP é uma implementação didática do jogo Simon. O objetivo do jogo é memorizar e reproduzir sequências de cores/sons que vão aumentando a cada rodada. O projeto traz:
+Simon-cpp é uma implementação didática do jogo Simon. O objetivo do jogo é memorizar e reproduzir sequências de cores/sons que vão aumentando a cada rodada. O projeto traz:
 
 - Interface simples com 4 botões coloridos.
 - Sons por cor e efeito de game over.
 - Lógica de estado (mostrar sequência / esperar input).
+- Placar com pontuações e combo
 
 ## Tecnologias Utilizadas
 
@@ -70,23 +71,27 @@ g++ src/*.cpp -I include -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audi
 ## Estrutura do Projeto
 
 ```text
-SimonCPP/
+simon-cpp/
 ├── src/
-│   ├── main.cpp
+│   ├── Button.cpp
 │   ├── Game.cpp
-│   ├── Window.cpp
-│   └── Button.cpp
+│   ├── main.cpp
+│   └── Window.cpp
 ├── include/
-│   ├── Game.hpp
-│   ├── Window.hpp
 │   ├── Button.hpp
-│   └── AudioManager.hpp
+│   ├── CursorManager.hpp
+│   ├── FlashManager.hpp
+│   ├── Game.hpp
+│   ├── ScoreDisplay.hpp
+│   ├── SequenceManager.hpp
+│   ├── SequencePlayer.hpp
+│   └── Window.hpp
 ├── resources/
 │   ├── sfx/
+│   │   ├── blue.ogg
+│   │   ├── gameover.ogg
 │   │   ├── green.ogg
 │   │   ├── red.ogg
-│   │   ├── yellow.ogg
-│   │   ├── blue.ogg
-│   │   └── gameover.ogg
+│   │   └── yellow.ogg
 └── README.md
 ```
